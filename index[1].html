@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Generator 1000 pomysłów na rysunek (z odmianą)</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #72edf2 0%, #5151e5 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  }
+
+  #pomysl {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    padding: 30px 25px;
+    max-width: 700px;
+    min-height: 120px;
+    font-size: 1.6rem;
+    line-height: 1.4;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    margin-bottom: 40px;
+    backdrop-filter: blur(10px);
+  }
+
+  button {
+    background: #ffd600;
+    color: #222;
+    border: none;
+    padding: 18px 50px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(255, 214, 0, 0.6);
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  button:hover {
+    background: #ffea00;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 234, 0, 0.8);
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 2rem;
+    }
+    #pomysl {
+      font-size: 1.3rem;
+      padding: 20px 15px;
+    }
+    button {
+      padding: 15px 35px;
+      font-size: 1.1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Generator 1000 pomysłów na rysunek</h1>
+
+<div id="pomysl">Kliknij przycisk, aby zobaczyć nowy pomysł na rysunek!</div>
+
+<button onclick="losujPomysl()">Losuj pomysł</button>
+
+<script>
+  // Lista zwierząt w mianowniku i ich odmiana w bierniku (kogo? co?)
+  const zwierzeta = [
+    { mianownik: "kot", biernik: "kota" },
+    { mianownik: "pies", biernik: "psa" },
+    { mianownik: "pingwin", biernik: "pingwina" },
+    { mianownik: "słoń", biernik: "słonia" },
+    { mianownik: "małpa", biernik: "małpę" },
+    { mianownik: "lis", biernik: "lisa" },
+    { mianownik: "nietoperz", biernik: "nietoperza" },
+    { mianownik: "wieloryb", biernik: "wieloryba" },
+    { mianownik: "żaba", biernik: "żabę" },
+    { mianownik: "papuga", biernik: "papugę" }
+  ];
+
+  // Czynności - przymiotniki w formie mianownik i biernik (rodzaj męski żywotny, lub żeńskie)
+  // Przyjmuję, że zwierzęta to żywe istoty, więc odmiana biernik = dopełniacz męski żywotny lub żeński biernik.
+  // Uproszczenie: przymiotniki w bierniku mają końcówki takie jak w mianowniku męskim żywotnym z końcówką -ego lub żeńskim -ą.
+  // Tu uproszczenie: większość w bierniku dodaję "ego" dla męskich lub "ą" dla żeńskich zwierząt (małpa, żaba, papuga - żeńskie).
+
+  // Najpierw przypiszmy rodzaj dla każdego zwierzęcia (m lub ż):
+  const rodzajZwierz = {
+    "kot": "m",
+    "pies": "m",
+    "pingwin": "m",
+    "słoń": "m",
+    "małpa": "ż",
+    "lis": "m",
+    "nietoperz": "m",
+    "wieloryb": "m",
+    "żaba": "ż",
+    "papuga": "ż"
+  };
+
+  // Czynności: forma mianownik, forma biernik (dostosowana do rodzaju)
+  const czynnosci = [
+    { mianownik: "tańczący", biernik_m: "tańczącego", biernik_z: "tańczącą" },
+    { mianownik: "śpiewający", biernik_m: "śpiewającego", biernik_z: "śpiewającą" },
+    { mianownik: "malujący", biernik_m: "malującego", biernik_z: "malującą" },
+    { mianownik: "gotujący", biernik_m: "gotującego", biernik_z: "gotującą" },
+    { mianownik: "piszący wiersze", biernik_m: "piszącego wiersze", biernik_z: "piszącą wiersze" },
+    { mianownik: "jeżdżący na deskorolce", biernik_m: "jeżdżącego na deskorolce", biernik_z: "jeżdżącą na deskorolce" },
+    { mianownik: "czytający książkę", biernik_m: "czytającego książkę", biernik_z: "czytającą książkę" },
+    { mianownik: "skaczący na skakance", biernik_m: "skaczącego na skakance", biernik_z: "skaczącą na skakance" },
+    { mianownik: "robiący origami", biernik_m: "robiącego origami", biernik_z: "robiącą origami" },
+    { mianownik: "budujący zamek z piasku", biernik_m: "budującego zamek z piasku", biernik_z: "budującą zamek z piasku" }
+  ];
+
+  const miejsca = [
+    "na księżycu", "w lesie", "na plaży", "w kosmosie", "w parku", "w szkole", "w muzeum", "w akwarium",
+    "na dachu budynku", "w teatrze"
+  ];
+
+  const pomysly = [];
+  for(let i=0; i<1000; i++) {
+    // Wylicz elementy
+    const zwierze = zwierzeta[i % zwierzeta.length];
+    const czyn = czynnosci[Math.floor(i / zwierzeta.length) % czynnosci.length];
+    const miejsce = miejsca[Math.floor(i / (zwierzeta.length * czynnosci.length)) % miejsca.length];
+
+    // Dobierz poprawną formę czynności zależnie od rodzaju zwierzęcia
+    const rodzaj = rodzajZwierz[zwierze.mianownik];
+    const czynBiernik = (rodzaj === "ż") ? czyn.biernik_z : czyn.biernik_m;
+
+    pomysly.push(`Narysuj ${zwierze.biernik} ${czynBiernik} ${miejsce}.`);
+  }
+
+  function losujPomysl() {
+    const index = Math.floor(Math.random() * pomysly.length);
+    document.getElementById('pomysl').textContent = pomysly[index];
+  }
+</script>
+
+</body>
+</html>
